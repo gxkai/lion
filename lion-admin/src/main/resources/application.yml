@@ -1,14 +1,14 @@
-#spring:
-#  security:
-#    user:
-#      name: ${USERNAME:admin}
-#      password: ${PASSWORD:admin}
-#
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: '*'
-#  endpoint:
-#    health:
-#      show-details: always
+spring:
+  security:
+    user:
+      name: ${USERNAME:admin}
+      password: ${PASSWORD:admin}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always

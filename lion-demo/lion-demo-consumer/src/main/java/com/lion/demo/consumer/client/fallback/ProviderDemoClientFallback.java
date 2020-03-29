@@ -1,7 +1,9 @@
 package com.lion.demo.consumer.client.fallback;
 
 import com.lion.common.entity.Result;
+import com.lion.common.exception.LionException;
 import com.lion.demo.consumer.client.ProviderDemoClient;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,7 +24,7 @@ public class ProviderDemoClientFallback implements ProviderDemoClient {
 
     @Override
     public Result saveTransactionalFromProvider(int num) {
-        return Result.failure("Invoke Method \"saveTransactionalFromProvider(int num)\" Fallback");
+        throw new LionException("Invoke Method \\\"saveTransactionalFromProvider(int num)\\\" Fallback\"");
     }
 
     @Override

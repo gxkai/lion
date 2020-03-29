@@ -2,13 +2,16 @@ package com.lion.demo.consumer.temp.controller;
 
 import com.lion.common.base.controller.BaseController;
 import com.lion.common.entity.Result;
+import com.lion.common.exception.LionException;
 import com.lion.demo.consumer.client.ProviderDemoClient;
 import com.lion.demo.consumer.temp.entity.TempTransactional;
 import com.lion.demo.consumer.temp.service.ITempTransactionalService;
+import io.seata.spring.annotation.GlobalTransactional;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,7 +46,7 @@ public class TempTransactionalController extends BaseController {
     @ApiParam(name = "num", value = "插入数据条数", defaultValue = "6", required = true)
     @RequestMapping(value = "/save/{num}", method = {RequestMethod.GET, RequestMethod.POST})
     @Transactional
-    //@GlobalTransactional
+    @GlobalTransactional
     public Result save(@PathVariable int num) {
 
         if (0 >= num) {
@@ -53,27 +56,27 @@ public class TempTransactionalController extends BaseController {
         Result result = providerDemoClient.saveTransactionalFromProvider(num);
         log.info("FeignClient 调用 provider 服务完成 reslut: {}", result);
 
-        for (int i = 0; i < num; i++) {
-
-            String randomStr = Math.ceil(Math.random() * 100) + "";
-
-            TempTransactional tempTransactional = new TempTransactional();
-            tempTransactional.setName("ConsumerName-" + randomStr);
-            tempTransactional.setValid(true);
-            tempTransactional.setCreateTime(LocalDateTime.now());
-            tempTransactional.setUpdateTime(LocalDateTime.now());
-
-            if (i + 1 < 7) {
-                //正常插入
-                tempTransactional.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-            } else {
-                //超出范围长度，触发事物回滚
-                tempTransactional.setId(UUID.randomUUID().toString());
-            }
-
-            // 若使用 Try Catch 需要手动回滚事务：TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            tempTransactionalService.save(tempTransactional);
-        }
+//        for (int i = 0; i < num; i++) {
+//
+//            String randomStr = Math.ceil(Math.random() * 100) + "";
+//
+//            TempTransactional tempTransactional = new TempTransactional();
+//            tempTransactional.setName("ConsumerName-" + randomStr);
+//            tempTransactional.setValid(true);
+//            tempTransactional.setCreateTime(LocalDateTime.now());
+//            tempTransactional.setUpdateTime(LocalDateTime.now());
+//
+//            if (i + 1 < 2) {
+//                //正常插入
+//                tempTransactional.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+//            } else {
+//                //超出范围长度，触发事物回滚
+//                tempTransactional.setId(UUID.randomUUID().toString());
+//            }
+//
+//            // 若使用 Try Catch 需要手动回滚事务：TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+//            tempTransactionalService.save(tempTransactional);
+//        }
 
         return Result.success("consumer -> temp_transactional 数据保存成功，执行条数：" + num);
     }

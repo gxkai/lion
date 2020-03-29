@@ -1,0 +1,75 @@
+version: "3"
+
+services:
+  seata-server:
+    image: seataio/seata-server:1.0.0
+    container_name: seata-server
+    hostname: seata-server
+    ports:
+      - "8091:8091"
+    environment:
+      - SEATA_PORT=8091
+      - STORE_MODE=file
+    restart: always
+  # 数据库
+  mysql:
+    container_name: mysql
+    image: mysql:8.0.19
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+        - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root@123'
+      MYSQL_USER: 'lion'
+      MYSQL_PASSWORD: 'lion'
+    restart: always
+  # 缓存数据库
+  redis:
+        container_name: redis
+        image: redis
+        command: redis-server --requirepass lion
+        ports:
+            - "6379:6379"
+        restart: always
+  # 消息中间件
+  rabbitmq:
+        container_name: rabbitmq
+        image: rabbitmq:3.8.2
+        ports:
+            # JMS 端口
+            - "5672:5672"
+            # 管理端口 default user:pass = guest:guest
+            - "15672:15672"
+        restart: always
+  # 注册中心
+  nacos:
+    container_name: nacos
+    image: nacos/nacos-server:1.1.4
+    ports:
+      - "8848:8848"
+    environment:
+      MODE: standalone
+    restart: always
+  # 流控、熔断、降级
+  sentinel:
+    container_name: sentinel
+    image: bladex/sentinel-dashboard:1.7.1
+    ports:
+      - "8858:8858"
+    restart: always
+  # 链路追踪
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin:2.20
+    ports:
+      - "9411:9411"
+    environment:
+      RABBIT_ADDRESSES: rabbitmq:5672
+      RABBIT_USER: guest
+      RABBIT_PASSWORD: guest
+      STORAGE_TYPE: mysql
+      MYSQL_HOST: mysql
+      MYSQL_USER: lion
+      MYSQL_PASS: lion
+      MYSQL_DB: zipkin
+    restart: always
