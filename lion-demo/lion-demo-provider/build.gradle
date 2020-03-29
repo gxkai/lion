@@ -52,13 +52,13 @@ docker {
         url = 'https://index.docker.io/v1/'
         username = 'lion'
         password = 'lion'
-        email = 'micyo202@163.com'
+        email = '1378026744@qq.com'
     }
     springBootApplication {
-        maintainer = 'Yanzheng https://github.com/micyo202'
+        maintainer = 'gxkai https://github.com/gxkai'
         baseImage = 'openjdk:11.0.6'
         ports = [8601]
-        images = ["micyo202/${project.name}:${version}"]
+        images = ["gxkai/${project.name}:${version}"]
         jvmArgs = ['-Dspring.profiles.active=$env', '-Djava.security.egd=file:/dev/./urandom', '-Xmx512m']
     }
 }
